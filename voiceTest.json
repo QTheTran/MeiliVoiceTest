@@ -1,0 +1,168 @@
+{
+    "MeiliVariables":
+	{
+		"Footsteps": { "varType": "SOUND", "audioChannel": "Footsteps", "loop": true, "fileURI": "footsteps.mp3", "comment": "" },
+		"SpeechText": { "varType": "CSVFILE", "fileURI": "sampleSpeech.csv", "comment": "" },
+		"Monster1": { "varType": "SOUND", "audioChannel": "Monster1", "loop": false, "fileURI": "monster.mp3", "comment": "" },
+		"SampleSpeech": { "varType": "SOUND", "speechChannel": "Monster1", "loop": false, "fileURI": "monster.mp3", "comment": "" },
+		"Laser": { "varType": "SOUND", "audioChannel": "Lasers", "loop": false, "fileURI": "laser.mp3", "comment": "" },
+		"Sword": { "varType": "SOUND", "audioChannel": "Lasers", "loop": false, "fileURI": "sword.mp3", "comment": "" },
+		"Goal": { "varType": "NUMBER", "startingValue":0, "minValue":1, "maxValue":1000, "comment":""},
+		"ShowHUD": { "varType": "NUMBER", "startingValue":1, "minValue":0, "maxValue":1, "comment":""},
+		"Progress": { "varType": "NUMBER", "startingValue":0, "minValue":0, "maxValue":100, "comment":""},
+		"Monsterrandom": { "varType": "NUMBER", "startingValue":0, "minValue":0, "maxValue":100, "comment":""},
+		"Button1": { "varType": "STRING", "startingValue": "Start", "comment": "" },
+		"StillDetecter": {"varType":"SHAKEACCUMULATOR", "startingValue":0, "maxValue": 100, "shakeLostPerSecond": 25, "comment":""},
+		"StepKeeper": { "varType": "STEPACCUMULATOR", "startingValue": 0, "stepsLostPerSecond": 0, "comment": "" },
+		"AltVoiceText": { "varType": "STRING", "startingValue": "Speech with modified settings", "comment": "" },
+		"AltVoiceName": { "varType": "STRING", "startingValue": "UK English Female", "comment": "" },
+		"CurrentVoice": { "varType": "NUMBER", "startingValue":0, "minValue":0, "maxValue":9, "comment":""},
+	"CalcProgress":
+	{
+	"varType":"MACRO",
+	"actionArray":
+	[
+	{"actionType":"CHANGEBYVAR", "leftVar":"Progress", "changeOperator":"=", "rightVar":"StepKeeper"},
+	{"actionType":"CHANGEBYVAR", "leftVar":"Progress", "changeOperator":"/", "rightVar":"Goal"}
+	]
+	}
+
+	},
+    
+    "MeiliEvents":
+	{
+	
+	"Startup":
+        {
+            "eventTrigger": { "triggerType": "ONAREAENTER" },
+            "comment": "",
+            "maxTriggerCount": 1,
+            "secondsBeforeRetriggering": 0,
+            "conditions": [],
+            "actionsUponSuccess":
+			[
+				{"actionType":"CHANGEBYVALUE", "leftVar":"Goal", "changeOperator":"=", "rightVal":800},	
+                {"actionType": "ADDBUTTON", "stringVar": "Button1" },
+                {"actionType": "STARTGEOLOCATION" }
+			],
+            "actionsUponFailure": []
+        },
+
+
+		"Start":
+        {
+            "eventTrigger": { "triggerType": "ONBUTTONCHOICE", "stringVar": "Button1" },
+            "comment": "",
+            "maxTriggerCount": -1,
+            "secondsBeforeRetriggering": 0,
+            "conditions": [],
+            "actionsUponSuccess":
+			[
+			{"actionType":"CHANGEBYVALUE", "leftVar":"StepKeeper", "changeOperator":"=", "rightVal":0}
+            ],
+            "actionsUponFailure": []
+        },
+
+
+		"StillCheck":
+			{
+			"eventTrigger":{"triggerType":"ONINTERVAL"},
+			"comment":"",
+			"secondsBeforeRetriggering":0,
+			"conditions":
+			[
+			{"conditionType":"COMPAREVALUE", "leftVar":"StillDetecter", "compareOperator":"<", "rightVal":25}
+			],
+			"actionsUponSuccess":
+			[
+			{"actionType":"PAUSEAUDIO", "audioVariable":"Footsteps"}
+			],
+			"actionsUponFailure":
+			[
+			{"actionType":"PLAYAUDIO", "audioVariable":"Footsteps"}
+			]
+			},
+
+
+ 		"Event0":
+        {
+            "eventTrigger": { "triggerType": "ONINTERVAL" },
+            "comment": "",
+            "secondsBeforeRetriggering": 10,
+            "conditions":
+			[
+		    ],
+            "actionsUponSuccess":
+			[
+			{"actionType":"DOMACRO", "macroVar":"CalcProgress"},
+			{"actionType":"CLEARMESSAGES"}
+			],
+            "actionsUponFailure": 
+            [
+            ]
+        },
+        
+        
+ 		"EventSpeech":
+        {
+            "eventTrigger": {"triggerType":"ONGESTURE", "acceptedGestures": ["TAP"]},
+            "comment": "",
+            "secondsBeforeRetriggering": 0,
+            "conditions":
+			[
+		    ],
+            "actionsUponSuccess":
+			[
+			{"actionType":"SPEECH", "label":"Speech using literal values, default voice settings", "csvFileName":"SpeechText", "row":"CurrentVoice", "pitch":"2.0", "rate":"1.0","voice":"US English Female", "say":"Fallback statement"}
+			],
+            "actionsUponFailure": 
+            [
+            ]
+        },
+        
+ 		"EventSpeechIteration":
+        {
+            "eventTrigger": {"triggerType":"ONGESTURE", "acceptedGestures": ["DOUBLETAP"]},
+            "comment": "",
+            "secondsBeforeRetriggering": 0,
+            "conditions":
+			[
+			{"conditionType":"COMPAREVALUE", "leftVar":"CurrentVoice", "compareOperator":"<", "rightVal":9}
+		    ],
+            "actionsUponSuccess":
+			[
+			{"actionType":"CHANGEBYVALUE", "leftVar":"CurrentVoice", "changeOperator":"+", "rightVal":1},
+			{"actionType":"SHOWVAR", "varName":"CurrentVoice", "prefix":"Set CurrentVoice To: ", "suffix":""}
+			],
+            "actionsUponFailure": 
+            [
+			{"actionType":"CHANGEBYVALUE", "leftVar":"CurrentVoice", "changeOperator":"=", "rightVal":0},
+			{"actionType":"SHOWVAR", "varName":"CurrentVoice", "prefix":"Set CurrentVoice To: ", "suffix":""}
+            ]
+        },
+        "EventToggleButtons":
+        {
+        	"eventTrigger": {"triggerType":"ONGESTURE", "acceptedGestures": ["TRIPLETAP"]},
+            "comment": "",
+            "secondsBeforeRetriggering": 0,
+            "conditions":
+			[
+			{"conditionType":"COMPAREVALUE", "leftVar":"ShowHUD", "compareOperator":">", "rightVal":0}
+		    ],
+            "actionsUponSuccess":
+			[
+			{"actionType":"HIDEBUTTONS"},
+			{"actionType":"HIDEINTERFACE"},
+			{"actionType":"CHANGEBYVALUE", "leftVar":"ShowHUD", "changeOperator":"=", "rightVal":0},
+			{"actionType":"SHOWVAR", "varName":"ShowHUD", "prefix":"Set SHOWHUD To: ", "suffix":""}
+			],
+            "actionsUponFailure": 
+            [
+			{"actionType":"SHOWBUTTONS"},
+			{"actionType":"SHOWINTERFACE"},
+			{"actionType":"CHANGEBYVALUE", "leftVar":"ShowHUD", "changeOperator":"=", "rightVal":1},
+			{"actionType":"SHOWVAR", "varName":"ShowHUD", "prefix":"Set SHOWHUD To: ", "suffix":""}
+            ]
+    	}
+    }
+}

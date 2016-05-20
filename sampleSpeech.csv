@@ -1,0 +1,10 @@
+0,sample1,"UK English Female",0.25,1,"Female normal rate normal pitch"
+1,sample2,"UK English Male",0.25,1,"Male normal rate normal pitch"
+2,sample3,"UK English Female",1.0,1,"Female fast rate normal pitch"
+3,sample4,"UK English Male",1.0,1,"Male fast rate normal pitch"
+4,sample5,"UK English Female",1.0,2,"Female fast rate high pitch"
+5,sample6,"UK English Male",1.0,2,"Male fast rate high pitch"
+6,sample7,,0.25,1,"Fallback voice normal rate normal pitch"
+7,sample7,,,1,"Fallback voice fallback rate normal pitch"
+8,sample8,,,,"Fallback voice fallback rate fallback pitch"
+9,sample9,,,,

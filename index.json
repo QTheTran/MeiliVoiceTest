@@ -2,6 +2,7 @@
 	"GameIconURL":"",
 	"GameTitle":"VoiceTest",
 	"GameDescription":"Testing voice commands",
+	"GitHubAuthor":"QTheTran",
 	"GlobalAreaFile":"voiceTest.json",
 	"AudioChannelDefinitions":
 	{
